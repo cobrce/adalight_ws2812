@@ -13,6 +13,7 @@ The voltage is read by analog pin at A7
 
 #### Hardware update
 
+```
 +5v ________
             |
             |
@@ -24,7 +25,7 @@ A7  ________
             |
             |
            GND
-
+```
 #### Software update
 * After doing the hardware update and flashed your device with this sketch, enable Expert mode in Prismatik Lightpack and enable server (make sure it uses port 3636)
-* Compile and execute the program [PrismatikAdapBrightness][https://github.com/cobrce/PrismatikAdapBrightness]
+* Compile and execute the program [PrismatikAdapBrightness](https://github.com/cobrce/PrismatikAdapBrightness)
