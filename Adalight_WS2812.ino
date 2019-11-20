@@ -6,12 +6,13 @@
  * @library: FastLED v3.001
  * @date: 11/22/2015
  */
-#include "FastLED.h"
-#define NUM_LEDS 240
+#include <FastLED.h>
+#define NUM_LEDS 80
 #define DATA_PIN 6
+#define ANALOG_PIN A7
 
 // Baudrate, higher rate allows faster refresh rate and more LEDs (defined in /etc/boblight.conf)
-#define serialRate 115200
+#define serialRate 1000000
 
 // Adalight sends a "Magic Word" (defined in /etc/boblight.conf) before sending the pixel data
 uint8_t prefix[] = {'A', 'd', 'a'}, hi, lo, chk, i;
@@ -35,12 +36,27 @@ void setup() {
   Serial.begin(serialRate);
   // Send "Magic Word" string to host
   Serial.print("Ada\n");
+
+  pinMode(ANALOG_PIN,INPUT);
+}
+
+unsigned long prevUpdate = 0;
+#define UPDATE_DELAY 100
+void UpdateBrightness()
+{
+    unsigned long now = millis();
+    if (prevUpdate == 0 || (now - prevUpdate)>=UPDATE_DELAY)
+    {
+        prevUpdate = now;
+        int value = analogRead(ANALOG_PIN);
+        Serial.println(value);
+    }
 }
 
 void loop() { 
   // Wait for first byte of Magic Word
   for(i = 0; i < sizeof prefix; ++i) {
-    waitLoop: while (!Serial.available()) ;;
+    waitLoop: do{UpdateBrightness();} while (!Serial.available());
     // Check next byte in Magic Word
     if(prefix[i] == Serial.read()) continue;
     // otherwise, start over
